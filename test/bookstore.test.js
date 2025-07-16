@@ -133,3 +133,25 @@ describe("Bookstore Inventory - Purchase Book", () => {
     expect(() => bookstore.purchaseBook(1, 10)).toThrow("Not enough stock available");
   });
 });
+
+describe("Bookstore Inventory - Restock Book", () => {
+  beforeEach(() => {
+    bookstore._reset();
+    bookstore.addBook({ id: 1, title: "Atomic Habits", author: "James Clear", price: 250, stock: 2 });
+  });
+
+  test("should increase stock after restocking", () => {
+    bookstore.restockBook(1, 5);
+    const book = bookstore.getBooks().find(b => b.id === 1);
+    expect(book.stock).toBe(7);
+  });
+
+  test("should throw error if book ID does not exist", () => {
+    expect(() => bookstore.restockBook(999, 3)).toThrow("Book not found");
+  });
+
+  test("should throw error if quantity is not positive", () => {
+    expect(() => bookstore.restockBook(1, 0)).toThrow("Quantity must be greater than zero");
+    expect(() => bookstore.restockBook(1, -2)).toThrow("Quantity must be greater than zero");
+  });
+});
