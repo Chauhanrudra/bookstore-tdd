@@ -113,3 +113,23 @@ describe("Bookstore Inventory - Search Books", () => {
     expect(result[0].title).toBe("Refactoring");
   });
 });
+describe("Bookstore Inventory - Purchase Book", () => {
+  beforeEach(() => {
+    bookstore._reset();
+    bookstore.addBook({ id: 1, title: "Dune", author: "Frank Herbert", price: 350, stock: 5 });
+  });
+
+  test("should reduce stock after purchase", () => {
+    bookstore.purchaseBook(1, 3);
+    const updatedBook = bookstore.getBooks().find(b => b.id === 1);
+    expect(updatedBook.stock).toBe(2);
+  });
+
+  test("should throw error if book ID does not exist", () => {
+    expect(() => bookstore.purchaseBook(999, 1)).toThrow("Book not found");
+  });
+
+  test("should throw error if stock is insufficient", () => {
+    expect(() => bookstore.purchaseBook(1, 10)).toThrow("Not enough stock available");
+  });
+});
