@@ -77,3 +77,39 @@ describe("Bookstore Inventory - Delete Book", () => {
     expect(() => bookstore.deleteBook(999)).toThrow("Book with this ID does not exist");
   });
 });
+describe("Bookstore Inventory - Search Books", () => {
+  beforeEach(() => {
+    bookstore._reset();
+
+    bookstore.addBook({ id: 1, title: "Clean Code", author: "Robert Martin", price: 500, stock: 5 });
+    bookstore.addBook({ id: 2, title: "The Pragmatic Programmer", author: "Andrew Hunt", price: 400, stock: 3 });
+    bookstore.addBook({ id: 3, title: "Refactoring", author: "Martin Fowler", price: 300, stock: 2 });
+  });
+
+  test("should search books by partial title", () => {
+    const result = bookstore.searchBooks({ title: "code" });
+    expect(result.length).toBe(1);
+    expect(result[0].title).toBe("Clean Code");
+  });
+
+  test("should search books by partial author", () => {
+    const result = bookstore.searchBooks({ author: "martin" });
+    expect(result.length).toBe(2); // Robert Martin & Martin Fowler
+  });
+
+  test("should search books by price range", () => {
+    const result = bookstore.searchBooks({ priceMin: 350, priceMax: 500 });
+    expect(result.map(b => b.id)).toEqual([1, 2]);
+  });
+
+  test("should return empty array if no match", () => {
+    const result = bookstore.searchBooks({ title: "nonexistent" });
+    expect(result).toEqual([]);
+  });
+
+  test("should combine multiple filters", () => {
+    const result = bookstore.searchBooks({ title: "refactor", author: "martin", priceMin: 200 });
+    expect(result.length).toBe(1);
+    expect(result[0].title).toBe("Refactoring");
+  });
+});

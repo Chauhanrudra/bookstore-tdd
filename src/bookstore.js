@@ -27,6 +27,20 @@ function deleteBook(id) {
   }
   books.splice(index, 1);
 }
+function searchBooks(query) {
+  return books.filter((book) => {
+    const matchesTitle =
+      !query.title || book.title.toLowerCase().includes(query.title.toLowerCase());
+
+    const matchesAuthor =
+      !query.author || book.author.toLowerCase().includes(query.author.toLowerCase());
+
+    const matchesPriceMin = query.priceMin === undefined || book.price >= query.priceMin;
+    const matchesPriceMax = query.priceMax === undefined || book.price <= query.priceMax;
+
+    return matchesTitle && matchesAuthor && matchesPriceMin && matchesPriceMax;
+  });
+}
 
 function _reset() {
   books = [];
@@ -37,4 +51,5 @@ module.exports = {
   getBooks,
   deleteBook,
   _reset,
+  searchBooks
 };
