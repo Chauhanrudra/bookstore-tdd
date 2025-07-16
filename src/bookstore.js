@@ -55,6 +55,16 @@ function purchaseBook(id, quantity) {
   }
   book.stock -= quantity;
 }
+function restockBook(id, quantity) {
+  const book = books.find(b => b.id === id);
+  if (!book) {
+    throw new Error("Book not found");
+  }
+  if (quantity <= 0) {
+    throw new Error("Quantity must be greater than zero");
+  }
+  book.stock += quantity;
+}
 
 
 module.exports = {
@@ -63,5 +73,6 @@ module.exports = {
   deleteBook,
   _reset,
   searchBooks,
-  purchaseBook
+  purchaseBook,
+  restockBook
 };
