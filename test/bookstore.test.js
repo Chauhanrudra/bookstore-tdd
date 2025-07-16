@@ -1,9 +1,8 @@
-const { addBook, getBooks } = require("../src/bookstore");
+const bookstore = require("../src/bookstore");
 
 describe("Bookstore Inventory - Add Book", () => {
   beforeEach(() => {
-    // Reset books before each test
-    require("../src/bookstore")._reset();
+    bookstore._reset();
   });
 
   test("should add a valid book to the inventory", () => {
@@ -14,9 +13,10 @@ describe("Bookstore Inventory - Add Book", () => {
       price: 500,
       stock: 10,
     };
-    addBook(book);
-    expect(getBooks()).toContainEqual(book);
+    bookstore.addBook(book);
+    expect(bookstore.getBooks()).toContainEqual(book);
   });
+
   test("should not allow duplicate book IDs", () => {
     const book1 = {
       id: 1,
@@ -33,11 +33,8 @@ describe("Bookstore Inventory - Add Book", () => {
       stock: 5,
     };
 
-    // First addBook call
-    addBook(book1);
-
-    // Now test the error by wrapping in function
-    expect(() => addBook(book2)).toThrow("Book with this ID already exists");
+    bookstore.addBook(book1);
+    expect(() => bookstore.addBook(book2)).toThrow("Book with this ID already exists");
   });
 
   test("should not allow book with negative price", () => {
@@ -48,27 +45,27 @@ describe("Bookstore Inventory - Add Book", () => {
       price: -50,
       stock: 5,
     };
-    expect(() => addBook(book)).toThrow("Price must be a positive number");
+    expect(() => bookstore.addBook(book)).toThrow("Price must be a positive number");
   });
 
   test("should not allow book with empty title", () => {
     const book = { id: 3, title: "", author: "Y", price: 100, stock: 5 };
-    expect(() => addBook(book)).toThrow("Title and Author are required");
+    expect(() => bookstore.addBook(book)).toThrow("Title and Author are required");
   });
 
   test("should not allow book with negative stock", () => {
     const book = { id: 4, title: "Book D", author: "Z", price: 100, stock: -1 };
-    expect(() => addBook(book)).toThrow("Stock cannot be negative");
+    expect(() => bookstore.addBook(book)).toThrow("Stock cannot be negative");
   });
 });
 
-describe('Bookstore Inventory - Delete Book', () => {
+describe("Bookstore Inventory - Delete Book", () => {
   beforeEach(() => {
-    bookstore.resetBooks();
+    bookstore._reset();
   });
 
-  test('should delete book with given ID', () => {
-    const book = { id: 10, title: 'Delete Me', author: 'X', price: 100, stock: 1 };
+  test("should delete book with given ID", () => {
+    const book = { id: 10, title: "Delete Me", author: "X", price: 100, stock: 1 };
     bookstore.addBook(book);
 
     bookstore.deleteBook(10);
@@ -76,8 +73,7 @@ describe('Bookstore Inventory - Delete Book', () => {
     expect(bookstore.getBooks()).not.toContainEqual(book);
   });
 
-  test('should throw error if book ID does not exist', () => {
-    expect(() => bookstore.deleteBook(999)).toThrow('Book with this ID does not exist');
+  test("should throw error if book ID does not exist", () => {
+    expect(() => bookstore.deleteBook(999)).toThrow("Book with this ID does not exist");
   });
 });
-
