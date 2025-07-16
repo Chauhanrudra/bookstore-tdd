@@ -45,11 +45,23 @@ function searchBooks(query) {
 function _reset() {
   books = [];
 }
+function purchaseBook(id, quantity) {
+  const book = books.find(b => b.id === id);
+  if (!book) {
+    throw new Error("Book not found");
+  }
+  if (book.stock < quantity) {
+    throw new Error("Not enough stock available");
+  }
+  book.stock -= quantity;
+}
+
 
 module.exports = {
   addBook,
   getBooks,
   deleteBook,
   _reset,
-  searchBooks
+  searchBooks,
+  purchaseBook
 };
